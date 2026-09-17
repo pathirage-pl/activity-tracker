@@ -1,0 +1,25 @@
+name: Daily Auto Updater
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+  workflow_dispatch: 
+
+jobs:
+  update_file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Update log file
+        run: |
+          echo "Last automated update on: $(date)" > update.log
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add update.log
+          git commit -m "Automated daily activity log update" || exit 0
+          git push
